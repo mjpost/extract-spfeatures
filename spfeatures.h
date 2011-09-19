@@ -557,10 +557,12 @@ public:
 		      const char* outfile) {
 
     const char* filesuffix = strrchr(outfile, '.');
-    std::string command(strcasecmp(filesuffix, ".bz2") 
-			? (strcasecmp(filesuffix, ".gz") 
-			   ? "cat > " : "gzip > ")
-			: "bzip2 > ");
+    std::string command(filesuffix != NULL
+						? (strcasecmp(filesuffix, ".bz2") 
+						   ? (strcasecmp(filesuffix, ".gz") 
+							  ? "cat > " : "gzip > ")
+						   : "bzip2 > ")
+						: "cat >");
     command += outfile;
     FILE *out = popen(command.c_str(), "w");
     if (out == NULL) {
