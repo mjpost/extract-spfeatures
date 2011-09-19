@@ -1,0 +1,9 @@
+1	file0.0
+-100
+(S1 (S (VP (DT the) (NN boy)) (VP (VBD ate) (NP (DT the) (NN sandwich)))))
+1	file0.1
+-105
+(S1 (S (NP (DT the) (NN boy)) (VP (VBD ate) (NP (DT the) (NN sandwich)))))
+1	file0.2
+-99
+(S1 (SINV (NP (DT the) (NN boy)) (ADJP (VBD ate) (NP (DT the) (VP sandwich)))))
