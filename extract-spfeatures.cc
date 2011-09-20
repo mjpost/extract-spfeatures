@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
 
   std::ios::sync_with_stdio(false);
 
-  size_t mincount = 5;    // (-s)  minimum number of sentences a feature must occur
+  size_t mincount = 1;    // (-s)  minimum number of sentences a feature must occur
                           //  in to be counted
 
   const char* fcname = NULL;
