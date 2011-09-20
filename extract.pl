@@ -97,7 +97,7 @@ while ($_ = <FEATURES>) {
   next unless $. >= 2;
 
   # remove features that compare to the gold parse tree
-  s/[GNPW0]=\d+(?:\.\d+)?\s+/ /g;
+  s/[GNPW0]=\d+(?:\.\d+)?\s*/ /g;
 
   # get rid of commas
   s/,/ /g;
@@ -130,4 +130,4 @@ close(MAP);
 # cleanup
 close($goldfh);
 close($parsefh);
-map { unlink($file); } ($featurefilename,$mapfilename,$goldfilename,$parsefilename);
+map { unlink($_); } ($featurefilename,$mapfilename,$goldfilename,$parsefilename);
