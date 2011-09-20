@@ -1,16 +1,86 @@
-research/collins/features/README 
+Matt Post <post@jhu.edu>
+September 2011
+--
 
-Mark Johnson, 27th August 2003
+This package is a wrapper around Eugene Charniak and Mark Johnson's
+parse tree feature extractor, described in their 2005 paper:
 
-This directory contains code for extracting features from the data files
-in ../data, for use with various estimation programs.
+@inproceedings{charniak2005coarse,
+  Title = {Coarse-to-fine n-best parsing and {MaxEnt} discriminative
+  Author = {Charniak, Eugene and Johnson, Mark},
+  Address = {Ann Arbor, Michigan, USA},
+  Booktitle = {Proc.\ ACL},
+  Month = {June},
+  Year = {2005}
+}
 
-Usage:
+The purpose of the wrapper is to allow features to be extracted over
+single parse tree instances.  As written, the feature extractor
+distributed with the code published by Mark Johnson (and available at
+http://web.science.mq.edu.au/~mjohnson/code/reranking-parser-Nov2009.tgz)
+is highly suited for their particular purpose of discriminative n-best
+parse tree reranking, requiring corresponding gold standard parse
+trees and outputting information in a format used by their MaxEnt
+training code.
 
-extract-features train.trees.bz2 dev.trees.bz2 train.fc.bz2 dev.fc.bz2
+In addition to the wrapper script, this package includes the
+a modified version of the "extract-spfeatures" program with the
+following changes:
 
-where:
- train.trees.bz2 and dev.trees.bz2 are the training/development trees,
- train.fc.bz2 and dev.fc.bz2 are the training/development feature count files.
+- Pseudo-constant features (ones that are the same for all items on an
+  n-best list) are not output in the C&J code, because they have no
+  discriminative ability.  My changes disable this disabling.
 
-The features are written to standard output.
+- It defins a "local" feature set, which is the set of features that
+  can be computed over single hyper-edges.
+
+- The minimum feature count threshold has been changed from 5 to 1.
+
+See the INSTALL file for details on compiling (hint: type "make").
+
+== USAGE =============================================================
+
+To run the program, you need a file or stream of parse trees, one per
+line.  Then invoke the wrapper as follows:
+
+  $ cat parse_trees | extract.pl [options] > features 2> feature_map
+
+This writes the features extracted for each parse tree to the file
+"features" and the mapping between feature id and feature name to the
+file "feature_map".  
+
+Parse trees should follow standard bracketing format, with a
+root-level label and all no mixing of terminals and preterminals
+(i.e., all terminals must be immediately governed by a preterminal).
+For example,
+
+   (S (NP (DT The) (NN boy)) (VP (VBD was)) (. .))
+
+The command-line arguments are:
+
+  --min N
+
+    This changes the rule count threshold, i.e., the minumum number of
+    times a feature must have been observed to be output.  The default
+    is 1 so that passing a single parse tree to the wrapper will still
+    output something.  If you are extracting features over a large
+    feature set, you should change this to 5, which is C&J's default.
+
+  --local
+
+    This computes only features that can be computed over a single
+    hyperedge.  It disables the following features and feature
+    classes: 
+
+    RightBranch, Heavy, CoPar, WProj, Rule(0,1), NGram*, NGramTree*,
+    HeadTree*, Heads*, Edges*
+
+== FAQ ===============================================================
+
+Q. Why do I get so many features?
+
+A. The minimum feature count threshold (which determines how many
+   separate parse trees must exhibit a feature before that feature is
+   output for any of them) has been changed to 1 from Charniak and
+   Johnson's default of 5.  You can change this by passing "--min 5"
+   to the wrapper script.
