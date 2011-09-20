@@ -1,0 +1,9 @@
+Type "make" to compile the binaries.
+
+Then run the "extract.pl" script in the following manner:
+
+  $ cat parse_trees | extract.pl > features 2> feature_map
+
+"features" will contain all featureid:value pairs for each input parse
+tree, and "feature_map" records the mapping between feature id and
+name.
