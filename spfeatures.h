@@ -43,6 +43,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <iostream>
 
 #include "lexical_cast.h"
 #include "sstring.h"
@@ -313,25 +314,25 @@ public:
       const F& feat = fit->first;
       const C_V& parse_val = fit->second;
       if (absolute_counts) {
-	for (size_type i = 0; i < s.nparses(); ++i) {
-	  V val = dfind(parse_val, i);
-	  if (val != 0)
-	    parse_fid_val[i][feat] = val;
-	}
+		for (size_type i = 0; i < s.nparses(); ++i) {
+		  V val = dfind(parse_val, i);
+		  if (val != 0)
+			parse_fid_val[i][feat] = val;
+		}
       }
       else {  // relative counts
-	V_C val_gain;  // number of times each feature value occured
-	for (size_type i = 0; i < s.nparses(); ++i) {
-	  const V val = dfind(parse_val, i);
-	  val_gain[val] += 2;
-	  val_gain[val-1] += 1;
-	}
-	const V& highest_gain_val = max_element(val_gain, second_lessthan())->first;
-	for (size_type i = 0; i < s.nparses(); ++i) {
-	  const V val = dfind(parse_val, i) - highest_gain_val;
-	  if (val != 0)
-	    parse_fid_val[i][feat] = val;
-	}
+		V_C val_gain;  // number of times each feature value occured
+		for (size_type i = 0; i < s.nparses(); ++i) {
+		  const V val = dfind(parse_val, i);
+		  val_gain[val] += 2;
+		  val_gain[val-1] += 1;
+		}
+		const V& highest_gain_val = max_element(val_gain, second_lessthan())->first;
+		for (size_type i = 0; i < s.nparses(); ++i) {
+		  const V val = dfind(parse_val, i) - highest_gain_val;
+		  if (val != 0)
+			parse_fid_val[i][feat] = val;
+		}
       }
     }
   }  // FeatureClass::sentence_parsefidvals()
@@ -362,12 +363,12 @@ public:
     
     if (debug_level > 1000) {
       cforeach (typename F_C_V, it, fpv.f_p_v) {
-	const C_V& p_v = it->second;
-	typename C_V::const_iterator it1 = p_v.find(0);
-	if (it1 != p_v.end())
-	  std::cerr << '\t' << fc.identifier() 
-		    << '\t' << it->first 
-		    << '\t' << it1->second << std::endl;
+		const C_V& p_v = it->second;
+		typename C_V::const_iterator it1 = p_v.find(0);
+		if (it1 != p_v.end())
+		  std::cerr << '\t' << fc.identifier() 
+					<< '\t' << it->first 
+					<< '\t' << it1->second << std::endl;
       }
     }
 
@@ -375,24 +376,25 @@ public:
 
     cforeach (typename F_C_V, it, fpv.f_p_v) {
       const C_V& p_v = it->second;
-      bool pseudoconstant = !force_extract; // = true;
+      bool pseudoconstant = !force_extract;
       if (p_v.size() != s.nparses()) // does feature occur on
-	pseudoconstant = false;      //  every parse?
+		pseudoconstant = false;      //  every parse?
       else {
-	assert(!p_v.empty());
-	V v0 = p_v.begin()->second;
-	cforeach (typename C_V, it1, p_v) 
-	  if (it1->second != v0) {
-	    pseudoconstant = false;
-	    break;
-	  }
+		assert(!p_v.empty());
+		V v0 = p_v.begin()->second;
+		cforeach (typename C_V, it1, p_v) 
+		  if (it1->second != v0) {
+			pseudoconstant = false;
+			break;
+		  }
       }
       if (pseudoconstant == false)
-	if ((collect_correct && p_v.find(0) != p_v.end())
-	    || (collect_incorrect 
-		&& (p_v.find(0) == p_v.end() || p_v.size() > 1)))
-	++fc.feature_id[it->first];
+		if ((collect_correct && p_v.find(0) != p_v.end())
+			|| (collect_incorrect 
+				&& (p_v.find(0) == p_v.end() || p_v.size() > 1)))
+		  ++fc.feature_id[it->first];
     }
+
   }  // FeatureClass::extract_features_helper()
 
 

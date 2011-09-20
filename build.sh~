@@ -1,1 +1,0 @@
-../prepare-data/ptb -c -n 10 -x 9 /export/common/data/corpora/LDC/LDC99T42/treebank_3/parsed/mrg/wsj/00/*mrg | head -100 | perl -pe 's/^<s.*?> |<\/s>//g' | java -jar /home/hltcoe/ccallison/bin/berkeleyParser/berkeleyParser.jar -gr /home/hltcoe/ccallison/bin/berkeleyParser/eng_sm6.gr -confidence | perl -pe 'print $val++ . $/' | perl -pe 's/\t/\n/' > top100

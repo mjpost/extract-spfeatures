@@ -1,27 +1,12 @@
-TARGETS = best-parses best-splhparses extract-spfeatures extract-splhfeatures extract-nfeatures oracle-score
+TARGETS = extract-spfeatures 
 SOURCES = best-parses.cc best-splhparses.cc extract-nfeatures.cc extract-splhfeatures.cc extract-spfeatures.cc heads.cc read-tree.l sym.cc oracle-score.cc
 OBJECTS = $(patsubst %.l,%.o,$(patsubst %.c,%.o,$(SOURCES:%.cc=%.o)))
 
 #CPPFLAGS=-g -pg -O0
 
-top: $(TARGETS)
+all: $(TARGETS)
 
-extract-spfeatures: extract-spfeatures.o heads.o read-tree.o sym.o
-	$(CXX) $(LDFLAGS) $^ -o $@
-
-extract-splhfeatures: extract-splhfeatures.o heads.o read-tree.o sym.o
-	$(CXX) $(LDFLAGS) $^ -o $@
-
-extract-nfeatures: extract-nfeatures.o heads.o read-tree.o sym.o
-	$(CXX) $(LDFLAGS) $^ -o $@
-
-best-parses: best-parses.o heads.o read-tree.o sym.o
-	$(CXX) $(LDFLAGS) $^ -o $@
-
-best-splhparses: best-splhparses.o heads.o read-tree.o sym.o
-	$(CXX) $(LDFLAGS) $^ -o $@
-
-oracle-score: oracle-score.o read-tree.o sym.o
+extract-spfeatures: extract-spfeatures.o heads.o read-tree.o sym.o spfeatures.h
 	$(CXX) $(LDFLAGS) $^ -o $@
 
 read-tree.cc: read-tree.l
