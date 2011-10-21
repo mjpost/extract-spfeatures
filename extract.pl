@@ -31,6 +31,11 @@ while (my $line = <>) {
   chomp($line);
   my ($score,$parse);
 
+  if ($line =~ qr/\(\)/) {
+	print STDERR "* FATAL: invalid parse tree at line $.\n";
+	exit 1;
+  }
+
   if ($line =~ /\t/) {
 
 	# format 1: each line contains a (score,tree) pair, delimited by a tab
