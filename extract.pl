@@ -13,14 +13,32 @@ use File::Temp qw/tempfile mktemp/;
 use File::Basename;
 use Getopt::Long;
 
-# add in --local for local features only
+# When this feature is activated, only features computable across a
+# single hyperedge (including its head and tail nodes) will be
+# computed.
 my $do_local_only = 0;
+
+# The minimum number of times a feature must be observed (across all
+# parse trees in the set) for it to be output.  You'll want to
+# increase this (to say 5) if you are processing a large batch of
+# trees, but it is set to 1 so you'll see the full feature set if you
+# pass in a single parse tree.
 my $mincount = 1;
+
+# The C&J feature extractor outputs features in SVM-light format,
+# where each feature is a number followed by its value (delimited with
+# a colon).  The map between feature ID and the string name of the
+# feature is then output to STDERR.  If you'd like this script to undo
+# this mapping and output string labels instead, use --undo-map.
+my $undo_map = 0;
+
+# The location of the extract program
 my $extract = dirname($0) . "/extract-spfeatures";
 
 # arguments: --min changes the feature pruning threshold (defaults to
 # 1), while --local turns off non-local features
 my $result = GetOptions("min=i" => \$mincount,
+						"undo-map!"  => \$undo_map,
 						"local" => \$do_local_only);
 
 # read in the parses from STDIN.  two formats are permitted: plain
@@ -95,6 +113,19 @@ my $local = ($do_local_only) ? "-f local" : "";
 my $cmd = qq($extract -s $mincount -ciae $local "cat $parsefilename" "cat $goldfilename" $featurefilename > $mapfilename 2> /dev/null);
 system($cmd);
 
+# now read in the feature mapping, if necessary
+my %feature_map;
+if ($undo_map) {
+  open FEATURE_MAP, $mapfilename or die;
+  while (my $line = <FEATURE_MAP>) {
+	chomp($line);
+	my ($id, $feature) = split(' ', $line, 2);
+	$feature =~ s/ +/_/g;
+	$feature_map{$id} = $feature;
+  }
+  close(FEATURE_MAP);
+}
+
 # munge the feature file output
 open FEATURES, $featurefilename;
 while ($_ = <FEATURES>) {
@@ -121,16 +152,22 @@ while ($_ = <FEATURES>) {
   # get rid of leading space
   s/^\s+//;
 
+  if ($undo_map) {
+	s/(\d+):/$feature_map{$1} . ':'/ge;
+  }
+
   print "$_\n";
 }
 close(FEATURES);
 
-# now print the feature mapping to STDERR
-open MAP, $mapfilename;
-while (<MAP>) {
-  print STDERR;
+# now print the feature mapping to STDERR (unless we undid the map)
+if (! $undo_map) {
+  open MAP, $mapfilename;
+  while (<MAP>) {
+	print STDERR;
+  }
+  close(MAP);
 }
-close(MAP);
 
 # cleanup
 close($goldfh);

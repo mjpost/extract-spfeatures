@@ -32,9 +32,13 @@ following changes:
   discriminative ability.  My changes disable this disabling.
 
 - It defins a "local" feature set, which is the set of features that
-  can be computed over single hyper-edges.
+  can be computed over single hyper-edges (including their head and
+  tail nodes).
 
 - The minimum feature count threshold has been changed from 5 to 1.
+  This is done so that you'll see features even if you pass it a
+  single parse tree.  If you plan to compute features over a whole set
+  of parse trees, you should increase this setting to 5 (--min 5).
 
 See the INSTALL file for details on compiling (hint: type "make").
 
@@ -47,7 +51,11 @@ line.  Then invoke the wrapper as follows:
 
 This writes the features extracted for each parse tree to the file
 "features" and the mapping between feature id and feature name to the
-file "feature_map".  
+file "feature_map".  The script can also map the feature IDs back to
+the feature names they were computed from, but be warned that this
+generates an enormous amount of text:
+
+  $ cat parse_trees | extract.pl --undo-map [options] > features
 
 Parse trees should follow standard bracketing format, with a
 root-level label and all no mixing of terminals and preterminals
@@ -74,6 +82,14 @@ The command-line arguments are:
 
     RightBranch, Heavy, CoPar, WProj, Rule(0,1), NGram*, NGramTree*,
     HeadTree*, Heads*, Edges*
+
+  --undo-map
+
+    By default, C&J's 'extract-spfeatures' program maps the (nicely)
+    verbose feature names to integers.  This wrapper script then
+    outputs that map to STDERR.  If you'd like to have the original
+    feature names (with spaces replaced with underscores), this option
+    will do that.
 
 == FAQ ===============================================================
 
