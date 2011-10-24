@@ -121,6 +121,7 @@ if ($undo_map) {
 	chomp($line);
 	my ($id, $feature) = split(' ', $line, 2);
 	$feature =~ s/ +/_/g;
+	$feature =~ s/:/_/g;
 	$feature_map{$id} = $feature;
   }
   close(FEATURE_MAP);
