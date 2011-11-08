@@ -125,3 +125,10 @@ A. There was a problem calling the extract-spfeatures binary; either
 
    make clean
    make
+
+== Acknowledgments ==============================================
+
+Thanks to the following people for committing bug fixes and other
+feedback:
+
+- Ritwik Banerjee
