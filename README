@@ -62,7 +62,7 @@ root-level label and all no mixing of terminals and preterminals
 (i.e., all terminals must be immediately governed by a preterminal).
 For example,
 
-   (S (NP (DT The) (NN boy)) (VP (VBD was)) (. .))
+   (TOP (S (NP (DT The) (NN boy)) (VP (VBD was)) (. .)))
 
 The command-line arguments are:
 
@@ -91,6 +91,19 @@ The command-line arguments are:
     feature names (with spaces replaced with underscores), this option
     will do that.
 
+  --root-label LABEL
+
+    If you pass the script trees that have no root label,  e.g.,
+
+    ( (S (NP (DT The) (NN boy)) (VP (VBD was)) (. .)) )
+
+    (output, for one, by the Berkeley parser), the root will be
+    renamed to "TOP" by default, since label-less roots cause the
+    extract-spfeatures binary to crash.  You can change the default
+    label with this flag.  Note that this will not change the root
+    label of already-labeled roots.
+
+
 == FAQ ===============================================================
 
 Q. Why do I get so many features?
@@ -100,3 +113,15 @@ A. The minimum feature count threshold (which determines how many
    output for any of them) has been changed to 1 from Charniak and
    Johnson's default of 5.  You can change this by passing "--min 5"
    to the wrapper script.
+
+Q. Why does the script crash with this error?
+
+   $ cat parse_trees | ./extract.pl 
+   readline() on closed filehandle FEATURES at ./extract.pl line 131.
+
+A. There was a problem calling the extract-spfeatures binary; either
+   it doesn't exist or isn't executable on your system.  Recompile it
+   with:
+
+   make clean
+   make
