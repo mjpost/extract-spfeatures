@@ -34,11 +34,21 @@ my $undo_map = 0;
 
 # The location of the extract program
 my $extract = dirname($0) . "/extract-spfeatures";
+if (! -e $extract) {
+  print STDERR "* FATAL: can't find '$extract' (did you run make?)\n";
+  exit;
+}
+
+# Parse trees that have empty roots will have them automatically
+# added. By default, 'TOP' is used, but that can be changed with the
+# --root-label argument.
+my $root_label = "TOP";
 
 # arguments: --min changes the feature pruning threshold (defaults to
 # 1), while --local turns off non-local features
 my $result = GetOptions("min=i" => \$mincount,
 						"undo-map!"  => \$undo_map,
+                        "root-label" => \$root_label,
 						"local" => \$do_local_only);
 
 # read in the parses from STDIN.  two formats are permitted: plain
@@ -52,6 +62,11 @@ while (my $line = <>) {
   if ($line =~ qr/\(\)/) {
 	print STDERR "* FATAL: invalid parse tree at line $.\n";
 	exit 1;
+  }
+
+  # add a root symbol if it's missing
+  if ($line =~ /^\(\s*\(/) {
+    $line =~ s/^\(/($root_label /;
   }
 
   if ($line =~ /\t/) {
