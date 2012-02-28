@@ -135,8 +135,12 @@ if ($undo_map) {
   while (my $line = <FEATURE_MAP>) {
 	chomp($line);
 	my ($id, $feature) = split(' ', $line, 2);
-	$feature =~ s/ +/_/g;
+	$feature =~ s/\s+/_/g;
 	$feature =~ s/:/_/g;
+	if (exists $feature_map{$id}) {
+	  print "* FATAL collision: '$feature' and '$feature_map{$id}'\n";
+	  exit;
+	}
 	$feature_map{$id} = $feature;
   }
   close(FEATURE_MAP);
@@ -146,10 +150,13 @@ if ($undo_map) {
 open FEATURES, $featurefilename;
 while ($_ = <FEATURES>) {
   chomp($_);
-  next unless $. >= 2;
+  next if $. == 1;
 
   # remove features that compare to the gold parse tree
-  s/[GNPW0]=\d+(?:\.\d+)?\s*/ /g;
+  s/[GNPW]=\d+\s+/ /g;
+
+  # remove the score
+  # s/\b0=\d+(?:\.\d+)?\s*/ /g;
 
   # get rid of commas
   s/,/ /g;

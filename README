@@ -2,6 +2,12 @@ Matt Post <post@jhu.edu>
 September 2011
 --
 
+NOTE (2012-02-28): A rather serious bug was found that removed the 
+  final digit from any feature ID ending in 0 and having a count >=2 
+  for a particular parse tree. 
+
+--
+
 This package is a wrapper around Eugene Charniak and Mark Johnson's
 parse tree feature extractor, described in their 2005 paper:
 
