@@ -871,6 +871,12 @@ struct resource_usage { };
 
 inline std::ostream& operator<< (std::ostream& os, resource_usage r)
 {
+  /* Mac OS X does not have /proc, but anyway we don't need this
+   * output for feature extraction, so I'm disabling it. (Matt Post)
+   */
+  return os;
+
+  /*
   FILE* fp = fopen("/proc/self/stat", "r");
   assert(fp);
   int utime;
@@ -887,6 +893,7 @@ inline std::ostream& operator<< (std::ostream& os, resource_usage r)
   // return s << "utime = " << utime << ", vsize = " << vsize;
   return os << "utime " << float(utime)/1.0e2 << "s, vsize " 
 	    << float(vsize)/1048576.0 << " Mb.";
+  */
 }
 
 #endif  // UTILITY_H
