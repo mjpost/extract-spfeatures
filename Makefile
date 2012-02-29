@@ -1,5 +1,5 @@
 TARGETS = extract-spfeatures 
-SOURCES = best-parses.cc best-splhparses.cc extract-nfeatures.cc extract-splhfeatures.cc extract-spfeatures.cc heads.cc read-tree.l sym.cc oracle-score.cc
+SOURCES = extract-spfeatures.cc heads.cc read-tree.cc sym.cc
 OBJECTS = $(patsubst %.l,%.o,$(patsubst %.c,%.o,$(SOURCES:%.cc=%.o)))
 
 #CPPFLAGS=-g -pg -O0
@@ -14,7 +14,7 @@ read-tree.cc: read-tree.l
 
 .PHONY: 
 clean: 
-	rm -fr *.o *.d *~ core read-tree.cc 
+	rm -fr *.o *.d *~ core read-tree.cc $(TARGETS)
 
 .PHONY: real-clean
 real-clean: clean 

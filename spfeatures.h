@@ -3219,10 +3219,10 @@ inline void FeatureClassPtrs::features_050902(bool nonlocal) {
   for (size_type binflag = 0; binflag < 2; ++binflag)
     for (size_type nleftprec = 0; nleftprec <= maxwidth; ++nleftprec)
       for (size_type nleftsucc = 0; nleftsucc <= maxwidth; ++nleftsucc)
-	for (size_type nrightprec = 0; nrightprec <= maxwidth; ++nrightprec)
-	  for (size_type nrightsucc = 0; nrightsucc <= maxwidth; ++nrightsucc)
-	    if (nleftprec + nleftsucc + nrightprec + nrightsucc <= maxsumwidth)
-	      push_back(new WordEdges(binflag, nleftprec, nleftsucc, nrightprec, nrightsucc));
+		for (size_type nrightprec = 0; nrightprec <= maxwidth; ++nrightprec)
+		  for (size_type nrightsucc = 0; nrightsucc <= maxwidth; ++nrightsucc)
+			if (nleftprec + nleftsucc + nrightprec + nrightsucc <= maxsumwidth)
+			  push_back(new WordEdges(binflag, nleftprec, nleftsucc, nrightprec, nrightsucc));
 
 }  // FeatureClassPtrs::features_050902()
 
